@@ -1,27 +1,3 @@
-"""
-Minimize f(x,y)=x^2 +y^2
-
-Batasan Ruang Pencarian:
--10 ≤ x ≤ 10
--10 ≤ y ≤ 10
-
-PSO
-Update Kecepatan
-v_{i}^{(t+1)} = w * v_{i}^{(t)} + c_1 * r_1 * (pbest_{i} - x_{i}^{(t)}) + c_2 * r_2 * (gbest - x_{i}^{(t)})
-
-Update Posisi:
-x_{i}^(t+1) = x_{i}^(t) + v_{i}^(t+1)
-
-Alur:
-1. Inisialisasi posisi dan kecepatan acak untuk semua partikel dalam ruang [-10,10]
-2. Hitung fitness f(x,y)=x^2 +y^2
-3. Simpan pbest dan gbest
-4. Ulangi selama N iterasi:
-5. Update kecepatan tiap partikel.
-6. Update posisi tiap partikel.
-7. Evaluasi kembali fitness → update pbest dan gbest jika perlu.
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -31,15 +7,15 @@ def objective_function(position):
     return x**2 + y**2
 
 # Parameter PSO
-num_particles = 10
-num_iterations = 100
-w = 0.7
-c1 = 1.5
-c2 = 1.5
-dim = 2
-bounds = [-10, 10]
+num_particles = 10 #Number of particles (solutions)
+num_iterations = 100 #Number of iterations
+w = 0.7 #Inertia (controlling momentum)
+c1 = 1.5 #Cognitive coefficient (towards pbest)
+c2 = 1.5 #Social coefficient (towards gbest)
+dim = 2 #Number of dimensions (x and y)
+bounds = [-10, 10] #Particle position boundaries
 
-# Inisialisasi posisi dan kecepatan
+# Initialize position and velocity
 positions = np.random.uniform(bounds[0], bounds[1], (num_particles, dim))
 velocities = np.random.uniform(-1, 1, (num_particles, dim))
 pbest_positions = np.copy(positions)
@@ -48,7 +24,7 @@ gbest_index = np.argmin(pbest_scores)
 gbest_position = pbest_positions[gbest_index]
 gbest_score = pbest_scores[gbest_index]
 
-# Menyimpan posisi tiap iterasi untuk animasi
+# Save the position of each iteration for animation
 history = []
 
 # Loop iterasi
@@ -75,7 +51,7 @@ for iteration in range(num_iterations):
         positions[i] += velocities[i]
         positions[i] = np.clip(positions[i], bounds[0], bounds[1])
 
-    # Simpan posisi untuk visualisasi
+    # Save position for visualization
     history.append(np.copy(positions))
 
     if (iteration + 1) % 10 == 0 or iteration == 0:
@@ -86,7 +62,7 @@ print(f"Posisi terbaik ditemukan: {gbest_position}")
 print(f"Nilai minimum fungsi: {gbest_score:.6f}")
 
 # =============================
-# Visualisasi Pergerakan Partikel
+# Visualization of Particle Movement
 # =============================
 
 import matplotlib.animation as animation
@@ -103,7 +79,7 @@ def update(frame):
     pos = history[frame]
     scat.set_offsets(pos)
     
-    # Bungkus posisi gbest dalam list agar tidak error
+    # save gbest position in list to avoid error
     gbest_dot.set_data([gbest_position[0]], [gbest_position[1]])
     
     ax.set_title(f"Iterasi {frame+1}")
